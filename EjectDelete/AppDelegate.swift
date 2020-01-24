@@ -13,8 +13,13 @@ import SwiftUI
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var statusBarItem: NSStatusItem!
-
+    var manger: IOHIDManager
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+    
+        
+        
+        
         let statusBar = NSStatusBar.system
         statusBarItem = statusBar.statusItem(withLength: NSStatusItem.squareLength)
         
