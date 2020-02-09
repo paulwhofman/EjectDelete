@@ -17,9 +17,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-    
-    
-        
         let statusBar = NSStatusBar.system
         statusBarItem = statusBar.statusItem(withLength: NSStatusItem.squareLength)
         
@@ -40,31 +37,36 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                               action: #selector(AppDelegate.quitClicked),
                               keyEquivalent: "")
         
-        print("hallo")
-    
-        
-        
-        
-        
-        
-        
-        func myCGEventCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
-            
 
+        func myCGEventCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
 
             let keyDown = 920064
-            var keyUp = 920320
-            
+            //var keyUp = 920320
+
             if type.rawValue == 14 {
                 if NSEvent(cgEvent: event)?.data1 == keyDown {
                     print("in statemetn")
                     event.setIntegerValueField(.keyboardEventKeycode, value: 0)
+                    print(event.getIntegerValueField(.keyboardEventKeycode))
+                    guard let forwardDeleteEvent = CGEvent.init(keyboardEventSource: nil, virtualKey: 0x75, keyDown: true) else { return nil }
+                    return Unmanaged.passRetained(forwardDeleteEvent)
                 }
             }
-            
             return Unmanaged.passRetained(event)
-            
         }
+        
+              
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 //        let eventMask = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue) | (1 << CGEventType.flagsChanged.rawValue)
 ////
             let eventMask : CGEventMask = ~0
@@ -104,14 +106,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func quitClicked() {
         NSApplication.shared.terminate(self)
     }
-    
-//    func press() {
-//        let keyCode: UInt16 = 0x00
-//        let event = CGEvent(keyboardEventSource: nil, virtualKey: keyCode, keyDown: true)
-//        let loc = CGEventTapLocation.cghidEventTap
-//        event?.post(tap: loc)
-//    }
-    
     
     
 }
