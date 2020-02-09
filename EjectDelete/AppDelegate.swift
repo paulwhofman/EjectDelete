@@ -8,8 +8,6 @@
 
 import Cocoa
 import SwiftUI
-import IOKit.hid
-
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -43,27 +41,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                               keyEquivalent: "")
         
         print("hallo")
+    
+        
+        
+        
+        
         
         
         func myCGEventCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
             
-            print(type.self)
+
+
+            let keyDown = 920064
+            var keyUp = 920320
             
-//            if [.keyDown , .keyUp].contains(type) {
-//
-//                var keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-////                if keyCode == 146 {
-////                    keyCode = 117
-////                }
-//                event.setIntegerValueField(.keyboardEventKeycode, value: keyCode)
-//            }
+            if type.rawValue == 14 {
+                if NSEvent(cgEvent: event)?.data1 == keyDown {
+                    print("in statemetn")
+                    event.setIntegerValueField(.keyboardEventKeycode, value: 0)
+                }
+            }
+            
             return Unmanaged.passRetained(event)
             
         }
 //        let eventMask = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue) | (1 << CGEventType.flagsChanged.rawValue)
-
+////
             let eventMask : CGEventMask = ~0
-        
         
         guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap,
                                               place: .headInsertEventTap,
