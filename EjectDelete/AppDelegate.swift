@@ -8,17 +8,19 @@
 
 import Cocoa
 import SwiftUI
+import IOKit.hid
+
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var statusBarItem: NSStatusItem!
-    var manger: IOHIDManager
+    
+    
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
     
-        
-        
+    
         
         let statusBar = NSStatusBar.system
         statusBarItem = statusBar.statusItem(withLength: NSStatusItem.squareLength)
@@ -40,13 +42,51 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                               action: #selector(AppDelegate.quitClicked),
                               keyEquivalent: "")
         
+        print("hallo")
         
         
+        func myCGEventCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
+            
+            print(type.self)
+            
+//            if [.keyDown , .keyUp].contains(type) {
+//
+//                var keyCode = event.getIntegerValueField(.keyboardEventKeycode)
+////                if keyCode == 146 {
+////                    keyCode = 117
+////                }
+//                event.setIntegerValueField(.keyboardEventKeycode, value: keyCode)
+//            }
+            return Unmanaged.passRetained(event)
+            
+        }
+//        let eventMask = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue) | (1 << CGEventType.flagsChanged.rawValue)
+
+            let eventMask : CGEventMask = ~0
+        
+        
+        guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap,
+                                              place: .headInsertEventTap,
+                                              options: .defaultTap,
+                                              eventsOfInterest: CGEventMask(eventMask),
+                                              callback: myCGEventCallback,
+                                              userInfo: nil) else {
+                                                print("failed to create event tap")
+                                                exit(1)
+        }
+        
+        let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        CGEvent.tapEnable(tap: eventTap, enable: true)
+        CFRunLoopRun()
+
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
+    
+
     
     @objc func pauseClicked() {
         // stop functionality
@@ -60,7 +100,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func quitClicked() {
         NSApplication.shared.terminate(self)
     }
-
-
+    
+//    func press() {
+//        let keyCode: UInt16 = 0x00
+//        let event = CGEvent(keyboardEventSource: nil, virtualKey: keyCode, keyDown: true)
+//        let loc = CGEventTapLocation.cghidEventTap
+//        event?.post(tap: loc)
+//    }
+    
+    
+    
 }
 
