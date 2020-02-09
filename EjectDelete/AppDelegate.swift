@@ -8,41 +8,85 @@
 
 import Cocoa
 import SwiftUI
+import ServiceManagement
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var statusBarItem: NSStatusItem!
-    
-    
+    var statusBarMenu : NSMenu!
+    var runLoopisRunning : Bool = true
+    let id = "EjectDeleteApplication"
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        self.constructMenu()
+        self.createStartRunLoop()
+    }
+    
+    func constructMenu() {
         let statusBar = NSStatusBar.system
         statusBarItem = statusBar.statusItem(withLength: NSStatusItem.squareLength)
-        
         statusBarItem.button?.title = "App"
-        
-        let statusBarMenu = NSMenu(title: "Hallo")
+        statusBarMenu = NSMenu(title: "Hallo")
         statusBarItem.menu = statusBarMenu
         
-        statusBarMenu.addItem(withTitle: "Pause",
-                              action: #selector(AppDelegate.pauseClicked),
+        statusBarMenu.addItem(withTitle: "Stop",
+                              action: #selector(self.pauseClicked),
                               keyEquivalent: "")
+        
+        statusBarMenu.addItem(NSMenuItem.separator())
         
         statusBarMenu.addItem(withTitle: "Load on startup",
-                              action: #selector(AppDelegate.loadOnStartupClicked),
+                              action: #selector(self.loadOnStartupClicked),
                               keyEquivalent: "")
+        
+        statusBarMenu.addItem(NSMenuItem.separator())
         
         statusBarMenu.addItem(withTitle: "Quit",
-                              action: #selector(AppDelegate.quitClicked),
+                              action: #selector(self.quitClicked),
                               keyEquivalent: "")
         
-
+        //set state of load on startup based on some variable that is saved somewhere
+    
+        
+    }
+    
+    
+    @objc func pauseClicked() {
+        let item : NSMenuItem = statusBarMenu.items[0]
+        if runLoopisRunning {
+            runLoopisRunning = false
+            item.title = "Start"
+            let currentRunLoop = CFRunLoopGetCurrent()
+            CFRunLoopStop(currentRunLoop)
+        } else {
+            runLoopisRunning = true
+            item.title = "Stop"
+            createStartRunLoop()
+        }
+    }
+    
+    @objc func loadOnStartupClicked() {
+        let item : NSMenuItem = statusBarMenu.items[1]
+        if item.state == NSControl.StateValue.on {
+            item.state = NSControl.StateValue.off
+            
+        } else if item.state == NSControl.StateValue.off {
+            item.state = NSControl.StateValue.on
+            SMLoginItemSetEnabled(id as CFString, true)
+        }
+    }
+    
+    @objc func quitClicked() {
+        NSApplication.shared.terminate(self)
+    }
+    
+    func createStartRunLoop() {
         func myCGEventCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
-
+            
             let keyDown = 920064
             //var keyUp = 920320
-
+            
             if type.rawValue == 14 {
                 if NSEvent(cgEvent: event)?.data1 == keyDown {
                     print("in statemetn")
@@ -55,58 +99,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return Unmanaged.passRetained(event)
         }
         
-              
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-//        let eventMask = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue) | (1 << CGEventType.flagsChanged.rawValue)
-////
-            let eventMask : CGEventMask = ~0
-        
+        let eventMask : CGEventMask = ~0
         guard let eventTap = CGEvent.tapCreate(tap: .cgSessionEventTap,
-                                              place: .headInsertEventTap,
-                                              options: .defaultTap,
-                                              eventsOfInterest: CGEventMask(eventMask),
-                                              callback: myCGEventCallback,
-                                              userInfo: nil) else {
+                                               place: .headInsertEventTap,
+                                               options: .defaultTap,
+                                               eventsOfInterest: CGEventMask(eventMask),
+                                               callback: myCGEventCallback,
+                                               userInfo: nil) else {
                                                 print("failed to create event tap")
                                                 exit(1)
         }
-        
         let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
         CFRunLoopRun()
-
     }
-
+    
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
-    
-
-    
-    @objc func pauseClicked() {
-        // stop functionality
-        // change button to resume
-    }
-    
-    @objc func loadOnStartupClicked() {
-        // load on startup
-    }
-    
-    @objc func quitClicked() {
-        NSApplication.shared.terminate(self)
-    }
-    
-    
 }
 
