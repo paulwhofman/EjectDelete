@@ -9,6 +9,7 @@
 import Cocoa
 import SwiftUI
 import ServiceManagement
+import LaunchAtLogin
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -21,6 +22,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         self.constructMenu()
         self.createStartRunLoop()
+        print(LaunchAtLogin.isEnabled)
     }
     
     func constructMenu() {
@@ -67,13 +69,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func loadOnStartupClicked() {
-        let item : NSMenuItem = statusBarMenu.items[1]
+        //item 2 because of seperator
+        let item : NSMenuItem = statusBarMenu.items[2]
         if item.state == NSControl.StateValue.on {
+            LaunchAtLogin.isEnabled = false
             item.state = NSControl.StateValue.off
             
         } else if item.state == NSControl.StateValue.off {
+            LaunchAtLogin.isEnabled = true
             item.state = NSControl.StateValue.on
-            SMLoginItemSetEnabled(id as CFString, true)
         }
     }
     

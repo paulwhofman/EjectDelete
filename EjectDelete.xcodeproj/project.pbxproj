@@ -11,7 +11,23 @@
 		3612CFC523D4CF8A0086930F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3612CFC423D4CF8A0086930F /* Assets.xcassets */; };
 		3612CFC823D4CF8A0086930F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3612CFC723D4CF8A0086930F /* Preview Assets.xcassets */; };
 		3612CFCB23D4CF8A0086930F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3612CFC923D4CF8A0086930F /* Main.storyboard */; };
+		36187A6A23FC57CB00F53983 /* LaunchAtLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36187A6923FC57CB00F53983 /* LaunchAtLogin.framework */; };
+		36187A6B23FC57CB00F53983 /* LaunchAtLogin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 36187A6923FC57CB00F53983 /* LaunchAtLogin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		36187A6C23FC57CB00F53983 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				36187A6B23FC57CB00F53983 /* LaunchAtLogin.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3612CFBD23D4CF890086930F /* EjectDelete.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EjectDelete.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -21,6 +37,7 @@
 		3612CFCA23D4CF8A0086930F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3612CFCC23D4CF8A0086930F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3612CFCD23D4CF8A0086930F /* EjectDelete.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EjectDelete.entitlements; sourceTree = "<group>"; };
+		36187A6923FC57CB00F53983 /* LaunchAtLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LaunchAtLogin.framework; path = Carthage/Build/Mac/LaunchAtLogin.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36187A6A23FC57CB00F53983 /* LaunchAtLogin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,6 +57,7 @@
 			children = (
 				3612CFBF23D4CF890086930F /* EjectDelete */,
 				3612CFBE23D4CF890086930F /* Products */,
+				36187A6823FC57CB00F53983 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +90,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		36187A6823FC57CB00F53983 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				36187A6923FC57CB00F53983 /* LaunchAtLogin.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -81,6 +108,8 @@
 				3612CFB923D4CF890086930F /* Sources */,
 				3612CFBA23D4CF890086930F /* Frameworks */,
 				3612CFBB23D4CF890086930F /* Resources */,
+				36187A6C23FC57CB00F53983 /* Embed Frameworks */,
+				36187A6D23FC57DA00F53983 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -136,6 +165,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		36187A6D23FC57DA00F53983 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/Mac/LaunchAtLogin.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n\"${PROJECT_DIR}/Carthage/Build/Mac/LaunchAtLogin.framework/Resources/copy-helper.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3612CFB923D4CF890086930F /* Sources */ = {
@@ -284,6 +334,10 @@
 				DEVELOPMENT_TEAM = GR9K3L795Q;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = EjectDelete/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -307,6 +361,10 @@
 				DEVELOPMENT_TEAM = GR9K3L795Q;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				INFOPLIST_FILE = EjectDelete/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
