@@ -17,12 +17,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem!
     var statusBarMenu : NSMenu!
     var runLoopisRunning : Bool = true
-    let id = "EjectDeleteApplication"
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         self.constructMenu()
         self.createStartRunLoop()
-        print(LaunchAtLogin.isEnabled)
     }
     
     func constructMenu() {
@@ -42,15 +40,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                               action: #selector(self.loadOnStartupClicked),
                               keyEquivalent: "")
         
+        //Set it to correct launchatlogin state
+        if LaunchAtLogin.isEnabled {
+            statusBarMenu.items[2].state = NSControl.StateValue.on
+        } else {
+            statusBarMenu.items[2].state = NSControl.StateValue.off
+        }
+        
         statusBarMenu.addItem(NSMenuItem.separator())
         
         statusBarMenu.addItem(withTitle: "Quit",
                               action: #selector(self.quitClicked),
                               keyEquivalent: "")
-        
-        //set state of load on startup based on some variable that is saved somewhere
-    
-        
     }
     
     
