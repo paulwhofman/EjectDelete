@@ -17,10 +17,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem!
     var statusBarMenu : NSMenu!
     var runLoopisRunning : Bool = true
+    var runLoopSource : CFRunLoopSource!
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         self.constructMenu()
-        self.createStartRunLoop()
+        self.createRunLoopSource()
+        self.start()
     }
     
     func constructMenu() {
@@ -60,12 +62,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if runLoopisRunning {
             runLoopisRunning = false
             item.title = "Start"
-            let currentRunLoop = CFRunLoopGetCurrent()
-            CFRunLoopStop(currentRunLoop)
+            self.stop()
         } else {
             runLoopisRunning = true
             item.title = "Stop"
-            createStartRunLoop()
+            self.start()
         }
     }
     
@@ -86,7 +87,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApplication.shared.terminate(self)
     }
     
-    func createStartRunLoop() {
+    func createRunLoopSource() {
         func myCGEventCallback(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent, refcon: UnsafeMutableRawPointer?) -> Unmanaged<CGEvent>? {
             
             let keyDown = 920064
@@ -114,9 +115,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                                 print("failed to create event tap")
                                                 exit(1)
         }
-        let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         CGEvent.tapEnable(tap: eventTap, enable: true)
+    }
+    
+    func start() {
+        self.createRunLoopSource()
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        CFRunLoopRun()
+    }
+    
+    func stop() {
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
         CFRunLoopRun()
     }
     
