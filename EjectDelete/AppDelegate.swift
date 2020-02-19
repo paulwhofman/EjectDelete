@@ -29,7 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let icon = NSImage(named: "MenuIcon")
         icon?.isTemplate = true
         let statusBar = NSStatusBar.system
-        statusBarItem = statusBar.statusItem(withLength: NSStatusItem.squareLength)
+        statusBarItem = statusBar.statusItem(withLength: NSStatusItem.variableLength)
         statusBarItem.button?.image = icon
         statusBarMenu = NSMenu(title: "Hallo")
         statusBarItem.menu = statusBarMenu
