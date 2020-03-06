@@ -32,8 +32,6 @@
 	<string>NSApplication</string>
 	<key>NSSupportsAutomaticTermination</key>
 	<true/>
-	<key>CFBundleDisplayName</key>
-	<string></string>
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSSupportsSuddenTermination</key>

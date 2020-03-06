@@ -13,8 +13,8 @@ import LaunchAtLogin
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
-    var statusBarItem: NSStatusItem!
+    
+    var statusBarItem : NSStatusItem!
     var statusBarMenu : NSMenu!
     var runLoopisRunning : Bool = true
     var runLoopSource : CFRunLoopSource!
@@ -94,12 +94,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
             let keyDown = 920064
             //var keyUp = 920320
-            
+            var nsEvent : NSEvent!
             if type.rawValue == 14 {
-                if NSEvent(cgEvent: event)?.data1 == keyDown {
-                    print("in statemetn")
-                    event.setIntegerValueField(.keyboardEventKeycode, value: 0)
-                    print(event.getIntegerValueField(.keyboardEventKeycode))
+                autoreleasepool{
+                    nsEvent = NSEvent(cgEvent: event)
+                }
+                if nsEvent?.data1 == keyDown {
                     guard let forwardDeleteEvent = CGEvent.init(keyboardEventSource: nil, virtualKey: 0x75, keyDown: true) else { return nil }
                     return Unmanaged.passRetained(forwardDeleteEvent)
                 }
